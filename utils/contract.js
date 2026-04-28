@@ -10,11 +10,20 @@ const CONTRACT_ABI = [
   "function bets(uint256) view returns (address creator, address opponent, uint256 amount, bool isOpen, bool isResolved, address winner, string description)",
 ];
 
+const BSC_TESTNET_RPC = "https://data-seed-prebsc-1-s1.binance.org:8545/";
+
 export function getProvider() {
   if (typeof window !== "undefined" && window.ethereum) {
     return new ethers.BrowserProvider(window.ethereum);
   }
   return null;
+}
+
+export function getReadProvider() {
+  if (typeof window !== "undefined" && window.ethereum) {
+    return new ethers.BrowserProvider(window.ethereum);
+  }
+  return new ethers.JsonRpcProvider(BSC_TESTNET_RPC);
 }
 
 export function getContract(signerOrProvider) {

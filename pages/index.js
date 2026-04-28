@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { getProvider, getContract } from "../utils/contract";
+import { getProvider, getReadProvider, getContract } from "../utils/contract";
 import BetCard from "../components/BetCard";
 
 const btnStyle = {
@@ -22,8 +22,7 @@ export default function Home({ account }) {
 
   async function loadBets() {
     try {
-      const provider = getProvider();
-      if (!provider) return;
+      const provider = getReadProvider();
       const contract = getContract(provider);
       const count = await contract.getBetsCount();
       const loaded = [];
