@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
 
-const CONTRACT_ADDRESS = "0x70797B9D30B4A4528Aa1611d2c48525F28aa3C83";
+const CONTRACT_ADDRESS = "0x68dd09fD8825134A2A506D022Eff387C7311738E";
 
 const CONTRACT_ABI = [
   "function createBet(string description) payable",

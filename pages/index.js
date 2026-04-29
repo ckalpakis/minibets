@@ -24,6 +24,12 @@ export default function Home({ account }) {
     try {
       const provider = getReadProvider();
       const contract = getContract(provider);
+      const code = await provider.getCode(contract.target);
+      if (code === "0x") {
+        console.error("No contract deployed at", contract.target);
+        setLoading(false);
+        return;
+      }
       const count = await contract.getBetsCount();
       const loaded = [];
       for (let i = 0; i < Number(count); i++) {
