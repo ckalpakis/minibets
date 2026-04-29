@@ -1,6 +1,9 @@
-import { useState } from "react";
+// create.js — Page for creating a new bet by entering a description and wager amount in tBNB
+
+import { useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { getProvider, getContract } from "../utils/contract";
+import PageHeading from "../components/PageHeading";
 
 const inputStyle = {
   padding: "12px 14px",
@@ -26,13 +29,6 @@ const btnStyle = {
   fontWeight: "600",
 };
 
-const headingStyle = {
-  fontSize: "28px",
-  fontWeight: "700",
-  marginBottom: "24px",
-  color: "#fff",
-};
-
 const formCard = {
   background: "linear-gradient(145deg, #1a1a2e, #16213e)",
   border: "1px solid rgba(226, 183, 20, 0.15)",
@@ -40,11 +36,20 @@ const formCard = {
   padding: "24px",
 };
 
+const labelStyle = {
+  color: "#888",
+  fontSize: "12px",
+  textTransform: "uppercase",
+  letterSpacing: "0.5px",
+  marginBottom: "6px",
+  display: "block",
+};
+
 export default function Create({ account }) {
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
 
-  async function handleCreate() {
+  const handleCreate = useCallback(async () => {
     if (!description || !amount) {
       alert("Please fill in all fields");
       return;
@@ -64,23 +69,32 @@ export default function Create({ account }) {
       console.error(err);
       alert("Error creating bet");
     }
-  }
+  }, [description, amount]);
 
-  if (!account) return <p style={{ color: "#888" }}>Please connect your wallet to create a bet.</p>;
+  if (!account) {
+    return (
+      <div>
+        <PageHeading title="Create a Bet" />
+        <p style={{ color: "#888" }}>Please connect your wallet to create a bet.</p>
+      </div>
+    );
+  }
 
   return (
     <div>
-      <h1 style={headingStyle}>Create a Bet</h1>
+      <PageHeading title="Create a Bet" subtitle="Set a wager and wait for someone to accept" />
       <div style={formCard}>
+        <label style={labelStyle}>Description</label>
         <input
           style={inputStyle}
           placeholder="What's the bet?"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
         />
+        <label style={labelStyle}>Wager Amount</label>
         <input
           style={inputStyle}
-          placeholder="Amount (tBNB)"
+          placeholder="0.001"
           type="number"
           step="0.001"
           value={amount}

@@ -1,7 +1,13 @@
-import { useState, useEffect } from "react";
+// index.js — Home page that displays all bets from the smart contract and allows users to join open bets
+
+import { useCallback } from "react";
 import { ethers } from "ethers";
-import { getProvider, getReadProvider, getContract } from "../utils/contract";
+import { getProvider, getContract } from "../utils/contract";
+import useBets from "../hooks/useBets";
 import BetCard from "../components/BetCard";
+import PageHeading from "../components/PageHeading";
+import LoadingSpinner from "../components/LoadingSpinner";
+import EmptyState from "../components/EmptyState";
 
 const btnStyle = {
   padding: "8px 20px",
@@ -14,61 +20,10 @@ const btnStyle = {
   fontSize: "14px",
 };
 
-const headingStyle = {
-  fontSize: "28px",
-  fontWeight: "700",
-  marginBottom: "24px",
-  color: "#fff",
-};
-
-const emptyStyle = {
-  color: "#666",
-  textAlign: "center",
-  padding: "40px 0",
-  fontSize: "16px",
-};
-
 export default function Home({ account }) {
-  const [bets, setBets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { bets, loading, reload } = useBets();
 
-  useEffect(() => {
-    loadBets();
-  }, []);
-
-  async function loadBets() {
-    try {
-      const provider = getReadProvider();
-      const contract = getContract(provider);
-      const code = await provider.getCode(contract.target);
-      if (code === "0x") {
-        console.error("No contract deployed at", contract.target);
-        setLoading(false);
-        return;
-      }
-      const count = await contract.getBetsCount();
-      const loaded = [];
-      for (let i = 0; i < Number(count); i++) {
-        const b = await contract.bets(i);
-        loaded.push({
-          id: i,
-          creator: b[0],
-          opponent: b[1],
-          amount: b[2],
-          isOpen: b[3],
-          isResolved: b[4],
-          winner: b[5],
-          description: b[6],
-        });
-      }
-      setBets(loaded);
-    } catch (err) {
-      console.error("Error loading bets:", err);
-    }
-    setLoading(false);
-  }
-
-  async function handleJoin(betId, amount) {
+  const handleJoin = useCallback(async (betId, amount) => {
     try {
       const provider = getProvider();
       const signer = await provider.getSigner();
@@ -76,19 +31,19 @@ export default function Home({ account }) {
       const tx = await contract.joinBet(betId, { value: amount });
       await tx.wait();
       alert("Joined bet!");
-      loadBets();
+      reload();
     } catch (err) {
       console.error(err);
       alert("Error joining bet");
     }
-  }
+  }, [reload]);
 
-  if (loading) return <p style={{ color: "#888" }}>Loading bets...</p>;
+  if (loading) return <LoadingSpinner message="Loading bets..." />;
 
   return (
     <div>
-      <h1 style={headingStyle}>All Bets</h1>
-      {bets.length === 0 && <p style={emptyStyle}>No bets yet.</p>}
+      <PageHeading title="All Bets" subtitle="Browse open bets and join one to compete" />
+      {bets.length === 0 && <EmptyState message="No bets yet. Be the first to create one!" />}
       {bets.map((bet) => (
         <BetCard
           key={bet.id}

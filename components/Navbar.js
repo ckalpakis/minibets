@@ -1,4 +1,7 @@
+// Navbar — Top navigation bar with page links, branding, and wallet connection button
+
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const navStyle = {
   display: "flex",
@@ -11,7 +14,7 @@ const navStyle = {
 
 const linksStyle = {
   display: "flex",
-  gap: "24px",
+  gap: "8px",
   alignItems: "center",
 };
 
@@ -22,16 +25,6 @@ const brandStyle = {
   textDecoration: "none",
   marginRight: "16px",
   letterSpacing: "1px",
-};
-
-const linkStyle = {
-  color: "#ccc",
-  textDecoration: "none",
-  fontSize: "15px",
-  fontWeight: "500",
-  padding: "6px 12px",
-  borderRadius: "6px",
-  transition: "background 0.2s",
 };
 
 const walletBadge = {
@@ -56,13 +49,25 @@ const connectBtn = {
 };
 
 export default function Navbar({ account, connectWallet }) {
+  const router = useRouter();
+
+  const getLinkStyle = (path) => ({
+    color: router.pathname === path ? "#e2b714" : "#ccc",
+    textDecoration: "none",
+    fontSize: "15px",
+    fontWeight: router.pathname === path ? "700" : "500",
+    padding: "6px 12px",
+    borderRadius: "6px",
+    background: router.pathname === path ? "rgba(226, 183, 20, 0.1)" : "transparent",
+  });
+
   return (
     <nav style={navStyle}>
       <div style={linksStyle}>
         <Link href="/" style={brandStyle}>MiniBet</Link>
-        <Link href="/" style={linkStyle}>Home</Link>
-        <Link href="/create" style={linkStyle}>Create</Link>
-        <Link href="/mybets" style={linkStyle}>My Bets</Link>
+        <Link href="/" style={getLinkStyle("/")}>Home</Link>
+        <Link href="/create" style={getLinkStyle("/create")}>Create</Link>
+        <Link href="/mybets" style={getLinkStyle("/mybets")}>My Bets</Link>
       </div>
       <div>
         {account ? (

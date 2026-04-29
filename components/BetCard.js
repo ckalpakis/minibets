@@ -1,4 +1,7 @@
+// BetCard — Displays a single bet with its description, amount, participants, and status badge
+
 import { ethers } from "ethers";
+import StatusBadge from "./StatusBadge";
 
 const cardStyle = {
   background: "linear-gradient(145deg, #1a1a2e, #16213e)",
@@ -14,12 +17,6 @@ const labelStyle = {
   textTransform: "uppercase",
   letterSpacing: "0.5px",
   marginBottom: "2px",
-};
-
-const valueStyle = {
-  color: "#eee",
-  fontSize: "15px",
-  marginBottom: "12px",
 };
 
 const descriptionStyle = {
@@ -43,12 +40,6 @@ const addressStyle = {
   fontFamily: "monospace",
 };
 
-const statusColors = {
-  Open: { bg: "rgba(46, 204, 113, 0.15)", color: "#2ecc71", border: "rgba(46, 204, 113, 0.3)" },
-  Joined: { bg: "rgba(52, 152, 219, 0.15)", color: "#3498db", border: "rgba(52, 152, 219, 0.3)" },
-  Resolved: { bg: "rgba(155, 89, 182, 0.15)", color: "#9b59b6", border: "rgba(155, 89, 182, 0.3)" },
-};
-
 const rowStyle = {
   display: "flex",
   justifyContent: "space-between",
@@ -63,23 +54,11 @@ export default function BetCard({ bet, actions }) {
       ? "Joined"
       : "Open";
 
-  const sc = statusColors[status];
-  const badgeStyle = {
-    display: "inline-block",
-    padding: "4px 12px",
-    borderRadius: "12px",
-    fontSize: "12px",
-    fontWeight: "600",
-    background: sc.bg,
-    color: sc.color,
-    border: `1px solid ${sc.border}`,
-  };
-
   return (
     <div style={cardStyle}>
       <div style={rowStyle}>
         <div style={descriptionStyle}>{bet.description}</div>
-        <span style={badgeStyle}>{status}</span>
+        <StatusBadge status={status} />
       </div>
       <div style={amountStyle}>{ethers.formatEther(bet.amount)} tBNB</div>
       <div style={{ marginBottom: "4px" }}>

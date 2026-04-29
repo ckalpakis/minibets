@@ -1,3 +1,5 @@
+// contract.js — Utility functions for connecting to the MiniBet smart contract on BSC Testnet
+
 import { ethers } from "ethers";
 
 const CONTRACT_ADDRESS = "0x68dd09fD8825134A2A506D022Eff387C7311738E";
@@ -12,6 +14,7 @@ const CONTRACT_ABI = [
 
 const BSC_TESTNET_RPC = "https://data-seed-prebsc-1-s1.binance.org:8545/";
 
+// Returns a BrowserProvider connected to MetaMask (null if not available)
 export function getProvider() {
   if (typeof window !== "undefined" && window.ethereum) {
     return new ethers.BrowserProvider(window.ethereum);
@@ -19,6 +22,7 @@ export function getProvider() {
   return null;
 }
 
+// Returns a read-only provider — uses MetaMask if available, otherwise falls back to public RPC
 export function getReadProvider() {
   if (typeof window !== "undefined" && window.ethereum) {
     return new ethers.BrowserProvider(window.ethereum);
@@ -26,6 +30,7 @@ export function getReadProvider() {
   return new ethers.JsonRpcProvider(BSC_TESTNET_RPC);
 }
 
+// Returns a Contract instance bound to the given signer or provider
 export function getContract(signerOrProvider) {
   return new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signerOrProvider);
 }

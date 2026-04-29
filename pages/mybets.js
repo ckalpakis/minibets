@@ -1,7 +1,13 @@
-import { useState, useEffect } from "react";
+// mybets.js — Page showing bets created by the connected wallet, with controls to resolve each bet
+
+import { useCallback } from "react";
 import { ethers } from "ethers";
-import { getProvider, getReadProvider, getContract } from "../utils/contract";
+import { getProvider, getContract } from "../utils/contract";
+import useBets from "../hooks/useBets";
 import BetCard from "../components/BetCard";
+import PageHeading from "../components/PageHeading";
+import LoadingSpinner from "../components/LoadingSpinner";
+import EmptyState from "../components/EmptyState";
 
 const btnStyle = {
   padding: "8px 20px",
@@ -15,58 +21,10 @@ const btnStyle = {
   fontSize: "14px",
 };
 
-const headingStyle = {
-  fontSize: "28px",
-  fontWeight: "700",
-  marginBottom: "24px",
-  color: "#fff",
-};
-
-const emptyStyle = {
-  color: "#666",
-  textAlign: "center",
-  padding: "40px 0",
-  fontSize: "16px",
-};
-
 export default function MyBets({ account }) {
-  const [myBets, setMyBets] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { bets: myBets, loading, reload } = useBets(account);
 
-  useEffect(() => {
-    if (account) loadMyBets();
-    else setLoading(false);
-  }, [account]);
-
-  async function loadMyBets() {
-    try {
-      const provider = getReadProvider();
-      const contract = getContract(provider);
-      const count = await contract.getBetsCount();
-      const loaded = [];
-      for (let i = 0; i < Number(count); i++) {
-        const b = await contract.bets(i);
-        if (b[0].toLowerCase() === account.toLowerCase()) {
-          loaded.push({
-            id: i,
-            creator: b[0],
-            opponent: b[1],
-            amount: b[2],
-            isOpen: b[3],
-            isResolved: b[4],
-            winner: b[5],
-            description: b[6],
-          });
-        }
-      }
-      setMyBets(loaded);
-    } catch (err) {
-      console.error("Error loading bets:", err);
-    }
-    setLoading(false);
-  }
-
-  async function handleResolve(betId, winnerAddress) {
+  const handleResolve = useCallback(async (betId, winnerAddress) => {
     try {
       const provider = getProvider();
       const signer = await provider.getSigner();
@@ -74,20 +32,28 @@ export default function MyBets({ account }) {
       const tx = await contract.resolveBet(betId, winnerAddress);
       await tx.wait();
       alert("Bet resolved!");
-      loadMyBets();
+      reload();
     } catch (err) {
       console.error(err);
       alert("Error resolving bet");
     }
+  }, [reload]);
+
+  if (!account) {
+    return (
+      <div>
+        <PageHeading title="My Bets" />
+        <p style={{ color: "#888" }}>Please connect your wallet to view your bets.</p>
+      </div>
+    );
   }
 
-  if (!account) return <p style={{ color: "#888" }}>Please connect your wallet to view your bets.</p>;
-  if (loading) return <p style={{ color: "#888" }}>Loading your bets...</p>;
+  if (loading) return <LoadingSpinner message="Loading your bets..." />;
 
   return (
     <div>
-      <h1 style={headingStyle}>My Bets</h1>
-      {myBets.length === 0 && <p style={emptyStyle}>You haven't created any bets.</p>}
+      <PageHeading title="My Bets" subtitle="Manage bets you've created" />
+      {myBets.length === 0 && <EmptyState message="You haven't created any bets yet." />}
       {myBets.map((bet) => (
         <BetCard
           key={bet.id}
