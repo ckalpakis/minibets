@@ -4,12 +4,28 @@ import { getProvider, getReadProvider, getContract } from "../utils/contract";
 import BetCard from "../components/BetCard";
 
 const btnStyle = {
-  padding: "8px 16px",
+  padding: "8px 20px",
   cursor: "pointer",
-  backgroundColor: "#333",
+  background: "linear-gradient(135deg, #e2b714, #f0c836)",
+  color: "#1a1a2e",
+  border: "none",
+  borderRadius: "8px",
+  fontWeight: "600",
+  fontSize: "14px",
+};
+
+const headingStyle = {
+  fontSize: "28px",
+  fontWeight: "700",
+  marginBottom: "24px",
   color: "#fff",
-  border: "1px solid #555",
-  borderRadius: "4px",
+};
+
+const emptyStyle = {
+  color: "#666",
+  textAlign: "center",
+  padding: "40px 0",
+  fontSize: "16px",
 };
 
 export default function Home({ account }) {
@@ -67,12 +83,12 @@ export default function Home({ account }) {
     }
   }
 
-  if (loading) return <p>Loading bets...</p>;
+  if (loading) return <p style={{ color: "#888" }}>Loading bets...</p>;
 
   return (
     <div>
-      <h1>All Bets</h1>
-      {bets.length === 0 && <p>No bets yet.</p>}
+      <h1 style={headingStyle}>All Bets</h1>
+      {bets.length === 0 && <p style={emptyStyle}>No bets yet.</p>}
       {bets.map((bet) => (
         <BetCard
           key={bet.id}

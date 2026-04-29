@@ -3,25 +3,41 @@ import { ethers } from "ethers";
 import { getProvider, getContract } from "../utils/contract";
 
 const inputStyle = {
-  padding: "10px",
+  padding: "12px 14px",
   width: "100%",
-  marginBottom: "12px",
-  backgroundColor: "#1a1a1a",
+  marginBottom: "14px",
+  background: "rgba(255, 255, 255, 0.05)",
   color: "#fff",
-  border: "1px solid #333",
-  borderRadius: "4px",
-  fontSize: "16px",
+  border: "1px solid rgba(226, 183, 20, 0.2)",
+  borderRadius: "8px",
+  fontSize: "15px",
   boxSizing: "border-box",
+  outline: "none",
 };
 
 const btnStyle = {
-  padding: "10px 24px",
+  padding: "12px 32px",
   cursor: "pointer",
-  backgroundColor: "#333",
-  color: "#fff",
-  border: "1px solid #555",
-  borderRadius: "4px",
+  background: "linear-gradient(135deg, #e2b714, #f0c836)",
+  color: "#1a1a2e",
+  border: "none",
+  borderRadius: "8px",
   fontSize: "16px",
+  fontWeight: "600",
+};
+
+const headingStyle = {
+  fontSize: "28px",
+  fontWeight: "700",
+  marginBottom: "24px",
+  color: "#fff",
+};
+
+const formCard = {
+  background: "linear-gradient(145deg, #1a1a2e, #16213e)",
+  border: "1px solid rgba(226, 183, 20, 0.15)",
+  borderRadius: "12px",
+  padding: "24px",
 };
 
 export default function Create({ account }) {
@@ -50,28 +66,30 @@ export default function Create({ account }) {
     }
   }
 
-  if (!account) return <p>Please connect your wallet to create a bet.</p>;
+  if (!account) return <p style={{ color: "#888" }}>Please connect your wallet to create a bet.</p>;
 
   return (
     <div>
-      <h1>Create a Bet</h1>
-      <input
-        style={inputStyle}
-        placeholder="Bet description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <input
-        style={inputStyle}
-        placeholder="Amount (tBNB)"
-        type="number"
-        step="0.001"
-        value={amount}
-        onChange={(e) => setAmount(e.target.value)}
-      />
-      <button style={btnStyle} onClick={handleCreate}>
-        Create Bet
-      </button>
+      <h1 style={headingStyle}>Create a Bet</h1>
+      <div style={formCard}>
+        <input
+          style={inputStyle}
+          placeholder="What's the bet?"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+        <input
+          style={inputStyle}
+          placeholder="Amount (tBNB)"
+          type="number"
+          step="0.001"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+        />
+        <button style={btnStyle} onClick={handleCreate}>
+          Create Bet
+        </button>
+      </div>
     </div>
   );
 }

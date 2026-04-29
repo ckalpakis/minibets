@@ -3,16 +3,16 @@ import Navbar from "../components/Navbar";
 import { getProvider } from "../utils/contract";
 
 const globalStyle = {
-  backgroundColor: "#0f0f0f",
+  background: "linear-gradient(180deg, #0a0a1a 0%, #0f0f23 100%)",
   color: "#fff",
   minHeight: "100vh",
-  fontFamily: "sans-serif",
+  fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
 };
 
 const containerStyle = {
-  maxWidth: "700px",
+  maxWidth: "720px",
   margin: "0 auto",
-  padding: "24px",
+  padding: "32px 24px",
 };
 
 export default function App({ Component, pageProps }) {

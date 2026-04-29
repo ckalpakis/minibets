@@ -4,13 +4,29 @@ import { getProvider, getReadProvider, getContract } from "../utils/contract";
 import BetCard from "../components/BetCard";
 
 const btnStyle = {
-  padding: "8px 16px",
+  padding: "8px 20px",
   marginRight: "8px",
   cursor: "pointer",
-  backgroundColor: "#333",
+  background: "linear-gradient(135deg, #e2b714, #f0c836)",
+  color: "#1a1a2e",
+  border: "none",
+  borderRadius: "8px",
+  fontWeight: "600",
+  fontSize: "14px",
+};
+
+const headingStyle = {
+  fontSize: "28px",
+  fontWeight: "700",
+  marginBottom: "24px",
   color: "#fff",
-  border: "1px solid #555",
-  borderRadius: "4px",
+};
+
+const emptyStyle = {
+  color: "#666",
+  textAlign: "center",
+  padding: "40px 0",
+  fontSize: "16px",
 };
 
 export default function MyBets({ account }) {
@@ -65,13 +81,13 @@ export default function MyBets({ account }) {
     }
   }
 
-  if (!account) return <p>Please connect your wallet to view your bets.</p>;
-  if (loading) return <p>Loading your bets...</p>;
+  if (!account) return <p style={{ color: "#888" }}>Please connect your wallet to view your bets.</p>;
+  if (loading) return <p style={{ color: "#888" }}>Loading your bets...</p>;
 
   return (
     <div>
-      <h1>My Bets</h1>
-      {myBets.length === 0 && <p>You haven't created any bets.</p>}
+      <h1 style={headingStyle}>My Bets</h1>
+      {myBets.length === 0 && <p style={emptyStyle}>You haven't created any bets.</p>}
       {myBets.map((bet) => (
         <BetCard
           key={bet.id}
